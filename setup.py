@@ -17,12 +17,30 @@ except VersionConflict:
     print("Error: version of setuptools is too old (<38.3)!")
     sys.exit(1)
 
+from pyannote import VERSION
+from setuptools.command.install import install
+class VerifyVersionCommand(install):
+    """Custom command to verify that the git tag matches our version"""
+    description = 'verify that the git tag matches our version'
+
+    def run(self):
+        tag = os.getenv('CIRCLE_TAG')
+
+        if tag != VERSION:
+            info = "Git tag: {0} does not match the version of this app: {1}. " \
+                   "Update version in pyannote/__init__.py".format(
+                tag, VERSION
+            )
+            sys.exit(info)
+
+
 
 ROOT_DIR = Path(__file__).parent.resolve()
 # Creating the version file
 
-with open("version.txt") as f:
-    version = f.read()
+version=VERSION
+# with open("version.txt") as f:
+#     version = f.read()
 
 version = version.strip()
 sha = "Unknown"
@@ -35,15 +53,16 @@ print("-- Building version " + version)
 
 version_path = ROOT_DIR / "pyannote" / "audio" / "version.py"
 
-with open(version_path, "w") as f:
-    f.write("__version__ = '{}'\n".format(version))
+# with open(version_path, "w") as f:
+#     f.write("__version__ = '{}'\n".format(version))
 
 if __name__ == "__main__":
     setup(
         name="pyannote.audio",
         namespace_packages=["pyannote"],
         version=version,
-        packages=find_packages(),
+        package_dir={'': 'src'},
+        packages=find_packages(where='src'),
         install_requires=requirements,
         description="Neural building blocks for speaker diarization",
         long_description=long_description,
@@ -60,4 +79,7 @@ if __name__ == "__main__":
             "Programming Language :: Python :: 3.8",
             "Topic :: Scientific/Engineering",
         ],
+        cmdclass={
+            'verify': VerifyVersionCommand,
+        }
     )
