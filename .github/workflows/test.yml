@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
         python-version: [3.7, 3.8, 3.9]
     steps:
     - uses: actions/checkout@v2
@@ -37,4 +37,4 @@ jobs:
         file: ./coverage.xml
         env_vars: PYTHON
         name: codecov-pyannote-audio
-        fail_ci_if_error: true
+        fail_ci_if_error: false

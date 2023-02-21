@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2020-2022 CNRS
+# Copyright (c) 2022- CNRS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,18 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .multilabel import MultiLabelSegmentation
-from .overlapped_speech_detection import OverlappedSpeechDetection
-from .resegmentation import Resegmentation
-from .segmentation import SpeakerSegmentation
-from .speaker_diarization import SpeakerDiarization
-from .voice_activity_detection import VoiceActivityDetection
+from copy import deepcopy
+from typing import Any, Mapping, Optional, Text
 
-__all__ = [
-    "VoiceActivityDetection",
-    "OverlappedSpeechDetection",
-    "SpeakerSegmentation",
-    "SpeakerDiarization",
-    "Resegmentation",
-    "MultiLabelSegmentation",
-]
+
+def logging_hook(key: Text, value: Any, file: Optional[Mapping] = None):
+    file[key] = deepcopy(value)
